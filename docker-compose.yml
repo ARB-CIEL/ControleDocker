@@ -11,7 +11,7 @@ services:
       - ./VolumesMosquitto/config:/mosquitto/config
       - ./VolumesMosquitto/data:/mosquitto/data
       - ./VolumesMosquitto/log:/mosquitto/log
-    restart: unless-stopped
+    restart: always # Ajouté pour bonne pratique
 
   mqtt_clientweb:
     image: emqx/mqttx-web
@@ -21,4 +21,16 @@ services:
     ports:
       - "8082:80"
 
+  portainer:
+    image: portainer/portainer-ce:alpine
+    container_name: mqtt_portainer
+    command: -H unix:///var/run/docker.sock
+    ports:
+      - "8083:9000"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - "portainer_data:/data"
+    restart: always
 
+volumes:
+  portainer_data:
