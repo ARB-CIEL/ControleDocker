@@ -1,13 +1,24 @@
 version: "3.9"
 
 services:
-  mqtt_mosquitto:
+  mqtt_broker:
     image: eclipse-mosquitto:2
     container_name: mqtt_mosquitto
     ports:
       - "1883:1883"
+      - "9005:9005"
     volumes:
       - ./VolumesMosquitto/config:/mosquitto/config
       - ./VolumesMosquitto/data:/mosquitto/data
       - ./VolumesMosquitto/log:/mosquitto/log
     restart: unless-stopped
+
+  mqtt_clientweb:
+    image: emqx/mqttx-web
+    container_name: mqtt_mqttx-web
+    depends_on:
+      - mqtt_broker
+    ports:
+      - "8082:80"
+
+
